@@ -207,7 +207,7 @@ class WalleeBasemodule
     }
 
 
-    private function installControllers(Wallee $module)
+    private static function installControllers(Wallee $module)
     {
         foreach ($module->getBackendControllers() as $className => $data) {
             if (Tab::getIdFromClassName($className)) {
