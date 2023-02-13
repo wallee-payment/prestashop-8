@@ -1,8 +1,7 @@
 
 
-# PrestaShop 1.8 wallee Integration - ALPHA
+# PrestaShop 1.8 wallee Integration
 This repository contains the PrestaShop wallee payment module that enables the shop to process payments with [wallee](https://www.wallee.com).
-This plugin is still in ALPHA and there may be bugs
 
 ##### To use this extension, a [wallee](https://app-wallee.com/user/signup) account is required.
 

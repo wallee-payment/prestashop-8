@@ -130,7 +130,7 @@ class WalleeBasemodule
         return $order;
     }
 
-    public function checkRequirements(Wallee $module)
+    public static function checkRequirements(Wallee $module)
     {
         if (!Module::isInstalled('mailhook')) {
             $module->addError(
