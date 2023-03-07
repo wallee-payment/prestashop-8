@@ -482,15 +482,15 @@ class WalleeHelper
      */
     public static function sortMethodConfiguration(array $configurations)
     {
-        usort(
-            $configurations,
-            function ($a, $b) {
-                if ($a->getSortOrder() == $b->getSortOrder()) {
-                    return $a->getConfigurationName() > $b->getConfigurationName();
-                }
-                return $a->getSortOrder() > $b->getSortOrder();
-            }
-        );
+		usort(
+			$configurations,
+			function ($a, $b) {
+				if ($a->getSortOrder() == $b->getSortOrder()) {
+					return  $b->getConfigurationName() <=> $a->getConfigurationName();
+				}
+				return  $b->getSortOrder() <=> $a->getSortOrder();
+			}
+		);
         return $configurations;
     }
 
