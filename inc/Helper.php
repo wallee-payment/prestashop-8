@@ -491,7 +491,7 @@ class WalleeHelper
 				return  $b->getSortOrder() <=> $a->getSortOrder();
 			}
 		);
-        return $configurations;
+		return $configurations;
     }
 
     /**

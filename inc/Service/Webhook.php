@@ -281,7 +281,7 @@ class WalleeServiceWebhook extends WalleeServiceAbstract
 
         $url = $link->getModuleLink('wallee', 'webhook', array(), true, $languageId, $shopId);
         // We have to parse the link, because of issue http://forge.prestashop.com/browse/BOOM-5799
-        $urlQuery = parse_url($url, PHP_URL_QUERY) ?? "";
+        $urlQuery = parse_url($url, PHP_URL_QUERY) ?? '';
         if (stripos($urlQuery, 'controller=module') !== false && stripos($urlQuery, 'controller=webhook') !== false) {
             $url = str_replace('controller=module', 'fc=module', $url);
         }

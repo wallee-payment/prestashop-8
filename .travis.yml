@@ -21,4 +21,4 @@ deploy:
     skip_cleanup: true
     on:
        tags: true
-       repo: {repo-owner}/{repo-name}
+       repo: wallee-payment/prestashop-8

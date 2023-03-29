@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
+
 
 
 # PrestaShop 1.8 wallee Integration
@@ -13,7 +15,7 @@ This repository contains the PrestaShop wallee payment module that enables the s
 
 ## Documentation
 
-* [English](@WalleeDocPath(/docs/en/documentation.html))
+* [English](https://plugin-documentation.wallee.com/wallee-payment/prestashop-8/1.0.0/docs/en/documentation.html)
 
 ## Support
 
@@ -21,7 +23,7 @@ Support queries can be issued on the [wallee support site](https://app-wallee.co
 
 ## License
 
-Please see the [license file](@WalleeRepoPath(/LICENSE)) for more information.
+Please see the [license file](https://github.com/wallee-payment/prestashop-8/blob/1.0.0/LICENSE) for more information.
 
 ## Other PrestaShop Versions
 

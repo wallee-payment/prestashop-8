@@ -131,7 +131,7 @@ abstract class WalleeServiceAbstract
      */
     protected function fixLength($string, $maxLength)
     {
-        return Tools::substr((string)$string, 0, $maxLength, 'UTF-8');
+        return Tools::substr((string) $string, 0, $maxLength, 'UTF-8');
     }
 
     /**
