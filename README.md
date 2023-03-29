@@ -1,5 +1,13 @@
 [![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
 
+[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
+
+[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
+
+[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
+
+[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
+
 
 
 # PrestaShop 1.8 wallee Integration
