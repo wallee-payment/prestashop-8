@@ -665,7 +665,7 @@ class WalleeHelper
         if ($maxExecutionTime === null || empty($maxExecutionTime) || $maxExecutionTime < 0) {
             return 30;
         } else {
-            return intval($maxExecutionTime);
+            return (int) $maxExecutionTime;
         }
     }
 

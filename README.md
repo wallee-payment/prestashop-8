@@ -1,13 +1,5 @@
 [![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
 
-[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
-
-[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
-
-[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
-
-[![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
-
 
 
 # PrestaShop 1.8 wallee Integration
@@ -17,8 +9,8 @@ This repository contains the PrestaShop wallee payment module that enables the s
 
 ## Requirements
 
-* [PrestaShop](https://www.prestashop.com/) 1.8
-* [PHP](http://php.net/) 5.6 or later
+* [PrestaShop](https://www.prestashop.com/) 8
+* [PHP](http://php.net/) 8.1 or later
 * [Mailhook](https://github.com/wallee-payment/prestashop-mailhook/releases) to modify PrestaShop email behavior.
 
 ## Documentation
