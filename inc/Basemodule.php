@@ -15,9 +15,10 @@ use PrestaShop\PrestaShop\Core\Grid\Action\Type\SimpleGridAction;
 use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinition;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\DataColumn;
+use Wallee\Sdk\Model\TransactionLineItemVersionCreate;
 
 /**
- * Base implementation for common features for PS1.6 and 1.7
+ * Base implementation for common features
  * Because of the PrestaShop Module Validator we can not use inheritance
  */
 class WalleeBasemodule
@@ -83,7 +84,7 @@ class WalleeBasemodule
     const TOTAL_MODE_WITHOUT_SHIPPING_EXC = 5;
 
     const CK_RUN_LIMIT = 'WLE_RUN_LIMIT';
-        
+    
     private static $recordMailMessages = false;
 
     private static $recordedMailMessages = array();
@@ -706,8 +707,8 @@ class WalleeBasemodule
                         'label' => $module->l('Disabled', 'basemodule')
                     )
                 ),
-                'desc' => $module->l('By enabling cart recreation the module will recreate the cart before the payment is authorized; 
-                    upon a failed transaction the cart will be restored for end users. 
+                'desc' => $module->l('By enabling cart recreation the module will recreate the cart before the payment is authorized;
+                    upon a failed transaction the cart will be restored for end users.
                     If this is disabled, the cart will be emptied on a failed transaction.', 'basemodule'),
                 'lang' => false
             )
@@ -1726,7 +1727,7 @@ class WalleeBasemodule
         return $module->display(dirname(dirname(__FILE__)), 'hook/order_detail.tpl');
     }
 
-    public function hookActionOrderGridQueryBuilderModifier(Wallee $module, $params)
+    public static function hookActionOrderGridQueryBuilderModifier(Wallee $module, $params)
     {
         $searchQueryBuilder = $params['search_query_builder'];
 
@@ -1742,7 +1743,7 @@ class WalleeBasemodule
         );
     }
 
-    public function hookActionOrderGridDefinitionModifier(Wallee $module, $params)
+    public static function hookActionOrderGridDefinitionModifier(Wallee $module, $params)
     {
 
         $orderGridDefinition = $params['definition'];
@@ -1785,7 +1786,7 @@ class WalleeBasemodule
         );
     }
 
-    private function getColumnById($gridDefinition, string $id)
+    private static function getColumnById($gridDefinition, string $id)
     {
         /** @var ColumnInterface $column */
         foreach ($gridDefinition->getColumns() as $column) {
@@ -1797,7 +1798,7 @@ class WalleeBasemodule
         throw new ColumnNotFoundException(sprintf('Column with id "%s" not found', $id));
     }
 
-    private function getActionsColumn(GridDefinition $gridDefinition)
+    private static function getActionsColumn(GridDefinition $gridDefinition)
     {
         try {
             return self::getColumnById($gridDefinition, 'actions');
@@ -2379,12 +2380,7 @@ class WalleeBasemodule
         }
         $module->getContext()->smarty->assign($templateVars);
         WalleeVersionadapter::getAdminOrderTemplate();
-        if (version_compare(_PS_VERSION_, '1.7.7', '>=')) {
-            return $module->display(dirname(dirname(__FILE__)), 'views/templates/admin/hook/admin_order177.tpl');
-
-        } else {
-            return $module->display(dirname(dirname(__FILE__)), 'views/templates/admin/hook/admin_order.tpl');
-        }
+	    return $module->display(dirname(dirname(__FILE__)), 'views/templates/admin/hook/admin_order.tpl');
     }
 
     public static function hookActionAdminOrdersControllerBefore(Wallee $module, $params)
@@ -2470,10 +2466,14 @@ class WalleeBasemodule
             }
 
             try {
+	            $lineItemVersion = (new TransactionLineItemVersionCreate())
+	              ->setTransaction((int)$transactionInfo->getTransactionId())
+	              ->setLineItems($lineItems)
+	              ->setExternalId(uniqid());
+
                 WalleeServiceTransaction::instance()->updateLineItems(
                     $transactionInfo->getSpaceId(),
-                    $transactionInfo->getTransactionId(),
-                    $lineItems
+                    $lineItemVersion
                 );
             } catch (Exception $e) {
                 WalleeHelper::rollbackDBTransaction();

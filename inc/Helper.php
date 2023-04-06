@@ -72,6 +72,7 @@ class WalleeHelper
         } else {
             throw new Exception('This module needs a PDO or MYSQLI link to use DB transactions');
         }
+		return $dbLink;
     }
 
     public static function commitDBTransaction()
@@ -318,7 +319,7 @@ class WalleeHelper
             $language = Context::getContext()->language->language_code;
         } elseif ($language instanceof Language) {
             $language = $language->language_code;
-        } elseif (ctype_digit($language)) {
+        } elseif (ctype_digit((string)$language)) {
             $language = self::convertLanguageIdToIETF($language);
         }
 

@@ -452,51 +452,49 @@ class Wallee extends PaymentModule
 
     public function hookActionOrderSlipAdd($params)
     {
-        if (version_compare(_PS_VERSION_, '1.7.7', '>=')) {
-            $refundParameters = Tools::getAllValues();
+        $refundParameters = Tools::getAllValues();
 
-            $order = $params['order'];
+        $order = $params['order'];
 
-            if (!Validate::isLoadedObject($order) || $order->module != $this->name) {
-                $idOrder = Tools::getValue('id_order');
-                if (!$idOrder) {
-                    $order = $params['order'];
-                    $idOrder = (int)$order->id;
-                }
-                $order = new Order((int) $idOrder);
-                if (! Validate::isLoadedObject($order) || $order->module != $module->name) {
-                    return;
-                }
+        if (!Validate::isLoadedObject($order) || $order->module != $this->name) {
+            $idOrder = Tools::getValue('id_order');
+            if (!$idOrder) {
+                $order = $params['order'];
+                $idOrder = (int)$order->id;
             }
-
-            $strategy = WalleeBackendStrategyprovider::getStrategy();
-
-            if ($strategy->isVoucherOnlyWallee($order, $refundParameters)) {
+            $order = new Order((int) $idOrder);
+            if (! Validate::isLoadedObject($order) || $order->module != $module->name) {
                 return;
             }
+        }
 
-            // need to manually set this here as it's expected downstream
-            $refundParameters['partialRefund'] = true;
+        $strategy = WalleeBackendStrategyprovider::getStrategy();
 
-            $backendController = Context::getContext()->controller;
-            $editAccess = 0;
+        if ($strategy->isVoucherOnlyWallee($order, $refundParameters)) {
+            return;
+        }
 
-            $access = Profile::getProfileAccess(
-                Context::getContext()->employee->id_profile,
-                (int) Tab::getIdFromClassName('AdminOrders')
-            );
-            $editAccess = isset($access['edit']) && $access['edit'] == 1;
+        // need to manually set this here as it's expected downstream
+        $refundParameters['partialRefund'] = true;
 
-            if ($editAccess) {
-                try {
-                    $parsedData = $strategy->simplifiedRefund($refundParameters);
-                    WalleeServiceRefund::instance()->executeRefund($order, $parsedData);
-                } catch (Exception $e) {
-                    $backendController->errors[] = WalleeHelper::cleanExceptionMessage($e->getMessage());
-                }
-            } else {
-                $backendController->errors[] = Tools::displayError('You do not have permission to delete this.');
+        $backendController = Context::getContext()->controller;
+        $editAccess = 0;
+
+        $access = Profile::getProfileAccess(
+            Context::getContext()->employee->id_profile,
+            (int) Tab::getIdFromClassName('AdminOrders')
+        );
+        $editAccess = isset($access['edit']) && $access['edit'] == 1;
+
+        if ($editAccess) {
+            try {
+                $parsedData = $strategy->simplifiedRefund($refundParameters);
+                WalleeServiceRefund::instance()->executeRefund($order, $parsedData);
+            } catch (Exception $e) {
+                $backendController->errors[] = WalleeHelper::cleanExceptionMessage($e->getMessage());
             }
+        } else {
+            $backendController->errors[] = Tools::displayError('You do not have permission to delete this.');
         }
     }
 

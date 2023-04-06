@@ -25,7 +25,6 @@ abstract class WalleeAbstractmigration
             static::migrateDb();
         } catch (Exception $e) {
             PrestaShopLogger::addLog($e->getMessage(), 2, null, 'Wallee');
-            return false;
         }
         return true;
     }
@@ -38,8 +37,8 @@ abstract class WalleeAbstractmigration
         }
         foreach (static::getMigrations() as $version => $functionName) {
             if (version_compare($currentVersion, $version, '<')) {
-                WalleeHelper::startDBTransaction();
                 try {
+	                WalleeHelper::startDBTransaction();
                     call_user_func(array(
                         get_called_class(),
                         $functionName
@@ -48,7 +47,6 @@ abstract class WalleeAbstractmigration
                     WalleeHelper::commitDBTransaction();
                 } catch (Exception $e) {
                     WalleeHelper::rollbackDBTransaction();
-                    throw $e;
                 }
                 $currentVersion = $version;
             }

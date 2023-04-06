@@ -26,7 +26,7 @@ class WalleeTools
         return call_user_func('base64_decode', $string);
     }
 
-    public static function hashHmac($algo, $data, $key, $raw_output = null)
+    public static function hashHmac($algo, $data, $key, $raw_output = false)
     {
         return call_user_func('hash_hmac', $algo, $data, $key, $raw_output);
     }

@@ -9,6 +9,8 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache Software License (ASL 2.0)
  */
 
+use Wallee\Sdk\Model\TransactionLineItemVersionCreate;
+
 /**
  * This service provides functions to deal with wallee transaction completions.
  */
@@ -121,10 +123,15 @@ class WalleeServiceTransactioncompletion extends WalleeServiceAbstract
             $collected[] = $baseOrder;
 
             $lineItems = WalleeServiceLineitem::instance()->getItemsFromOrders($collected);
+
+	        $lineItemVersion = (new TransactionLineItemVersionCreate())
+			  ->setTransaction((int)$completionJob->getTransactionId())
+			  ->setLineItems($lineItems)
+			  ->setExternalId(uniqid());
+			
             WalleeServiceTransaction::instance()->updateLineItems(
                 $completionJob->getSpaceId(),
-                $completionJob->getTransactionId(),
-                $lineItems
+                $lineItemVersion
             );
             $completionJob->setState(WalleeModelCompletionjob::STATE_ITEMS_UPDATED);
             $completionJob->save();

@@ -9,6 +9,10 @@
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache Software License (ASL 2.0)
  */
 
+use Wallee\Sdk\Service\TransactionInvoiceService;
+use Wallee\Sdk\Service\TransactionLineItemVersionService;
+use Wallee\Sdk\Model\TransactionLineItemVersionCreate;
+
 /**
  * This service provides functions to deal with wallee transactions.
  */
@@ -56,7 +60,9 @@ class WalleeServiceTransaction extends WalleeServiceAbstract
      * @var \Wallee\Sdk\Service\ChargeAttemptService
      */
     private $chargeAttemptService;
-
+	
+	private $transactionLineItemVersionService;
+	
     /**
      * Returns the transaction API service.
      *
@@ -212,22 +218,20 @@ class WalleeServiceTransaction extends WalleeServiceAbstract
             return null;
         }
     }
-
-    /**
-     * Updates the line items of the given transaction.
-     *
-     * @param int $spaceId
-     * @param int $transactionId
-     * @param \Wallee\Sdk\Model\LineItem[] $lineItems
-     * @return \Wallee\Sdk\Model\TransactionLineItemVersion
-     */
-    public function updateLineItems($spaceId, $transactionId, $lineItems)
-    {
-        $updateRequest = new \Wallee\Sdk\Model\TransactionLineItemUpdateRequest();
-        $updateRequest->setTransactionId($transactionId);
-        $updateRequest->setNewLineItems($lineItems);
-        return $this->getTransactionService()->updateTransactionLineItems($spaceId, $updateRequest);
-    }
+	
+	/**
+	 * Create a version of line items
+	 *
+	 * @param string $spaceId
+	 * @param \Wallee\Sdk\Model\TransactionLineItemVersionCreate $lineItemVersion
+	 * @return \Wallee\Sdk\Model\TransactionLineItemVersion
+	 * @throws \Wallee\Sdk\ApiException
+	 * @throws \Wallee\Sdk\Http\ConnectionException
+	 * @throws \Wallee\Sdk\VersioningException
+	 */
+	public function updateLineItems($spaceId, TransactionLineItemVersionCreate $lineItemVersion){
+		return $this->getTransactionLineItemVersionService()->create($spaceId, $lineItemVersion);
+	}
 
     /**
      * Stores the transaction data in the database.
@@ -723,6 +727,17 @@ class WalleeServiceTransaction extends WalleeServiceAbstract
         }
         return null;
     }
+	
+	/**
+	 * @return TransactionLineItemVersionService
+	 * @throws Exception
+	 */
+	protected function getTransactionLineItemVersionService() {
+		if (!$this->transactionLineItemVersionService) {
+			$this->transactionLineItemVersionService = new TransactionLineItemVersionService(WalleeHelper::getApiClient());
+		}
+		return $this->transactionLineItemVersionService;
+	}
 
     /**
      * Returns the shipping name
