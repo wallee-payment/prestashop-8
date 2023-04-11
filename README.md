@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/wallee-payment/prestashop-8.svg?branch=master)](https://travis-ci.org/wallee-payment/prestashop-8)
 
-
-
 # PrestaShop 8 wallee Integration
 This repository contains the PrestaShop wallee payment module that enables the shop to process payments with [wallee](https://www.wallee.com).
 

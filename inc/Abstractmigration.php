@@ -67,7 +67,7 @@ abstract class WalleeAbstractmigration
 				`title` longtext COLLATE utf8_unicode_ci,
 				`description` longtext COLLATE utf8_unicode_ci,
 				`image` varchar(2047) COLLATE utf8_unicode_ci DEFAULT NULL,
-				`image_base` varchar(2047) COLLATE utf8_unicode_ci DEFAULT NULL,
+				`image_base` varchar(2047) COLLATE utf8_unicode_ci NULL DEFAULT NULL,
                 `sort_order` bigint(20) NOT NULL,
                 `active` tinyint(1) unsigned NOT NULL DEFAULT 0,
                 `show_description` tinyint(1) unsigned NOT NULL DEFAULT 1,
@@ -104,7 +104,8 @@ abstract class WalleeAbstractmigration
 				`currency` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 				`authorization_amount` decimal(19,8) NOT NULL,
 				`image` varchar(2047) COLLATE utf8_unicode_ci DEFAULT NULL,
-				`image_base` varchar(2047) COLLATE utf8_unicode_ci DEFAULT NULL,
+				`image_base` varchar(2047) COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+				`user_failure_message` VARCHAR(2047)  COLLATE utf8_unicode_ci NULL DEFAULT NULL,
 				`labels` longtext COLLATE utf8_unicode_ci,
 				`payment_method_id` bigint(20) unsigned DEFAULT NULL,
 				`connector_id` bigint(20) unsigned DEFAULT NULL,
@@ -131,7 +132,7 @@ abstract class WalleeAbstractmigration
 				`state` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 				`space_id` bigint(20) unsigned NOT NULL,
 				`name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-				`customer_id` int(10) unsigned NOT NULL,
+				`customer_id` int(10) unsigned NULL DEFAULT NULL,
 				`payment_method_id` int(10) unsigned NOT NULL,
 				`connector_id` bigint(20) unsigned DEFAULT NULL,
 				`date_add` datetime NOT NULL,
@@ -249,6 +250,38 @@ abstract class WalleeAbstractmigration
         if ($result === false) {
             throw new Exception($instance->getMsgError());
         }
+		
+	    $result = $instance->execute(
+	      "CREATE TABLE IF NOT EXISTS " . _DB_PREFIX_ . "wle_cron_job(
+                `id_cron_job` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `constraint_key` int(10),
+                `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                `security_token` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                `date_scheduled` datetime,
+                `date_started` datetime,
+                `date_finished` datetime,
+                `error_msg` longtext COLLATE utf8_unicode_ci,
+                PRIMARY KEY (`id_cron_job`),
+                UNIQUE KEY `unq_constraint_key` (`constraint_key`),
+                INDEX `idx_state` (`state`),
+                INDEX `idx_security_token` (`security_token`),
+                INDEX `idx_date_scheduled` (`date_scheduled`),
+                INDEX `idx_date_started` (`date_started`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
+	    );
+	
+	    if ($result === false) {
+		    throw new Exception($instance->getMsgError());
+	    }
+	    $moduleInstance = WalleeHelper::getModuleInstance();
+	    $moduleInstance->registerHook('walleeCron');
+	    $moduleInstance->registerHook('displayTop');
+	    $moduleInstance->unregisterHook('actionCronJob');
+	
+	    $controllers = $moduleInstance->getBackendControllers();
+	    if (!Tab::getIdFromClassName('AdminWalleeCronJobs')) {
+		    WalleeBasemodule::addTab($moduleInstance, 'AdminWalleeCronJobs', $controllers['AdminWalleeCronJobs']['name'], $controllers['AdminWalleeCronJobs']['parentId']);
+	    }
     }
 
     protected static function installOrderStatusConfigBase()
@@ -287,51 +320,6 @@ abstract class WalleeAbstractmigration
         );
         if ($result === false) {
             throw new Exception($instance->getMsgError());
-        }
-    }
-
-    protected static function updateImageBase()
-    {
-        $instance = Db::getInstance();
-        $exists = $instance->executeS(
-            "SHOW COLUMNS FROM `" . _DB_PREFIX_ . "wle_method_configuration` LIKE 'image_base'"
-        );
-        if (empty($exists)) {
-            $result = $instance->execute(
-                "ALTER TABLE `" . _DB_PREFIX_ .
-                "wle_method_configuration` ADD COLUMN `image_base` varchar(2047) COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER image;"
-            );
-            if ($result === false) {
-                throw new Exception($instance->getMsgError());
-            }
-        }
-
-        $exists = $instance->executeS("SHOW COLUMNS FROM `" . _DB_PREFIX_ . "wle_transaction_info` LIKE 'image_base'");
-        if (empty($exists)) {
-            $result = $instance->execute(
-                "ALTER TABLE `" . _DB_PREFIX_ .
-                "wle_transaction_info` ADD COLUMN `image_base` VARCHAR(2047)  COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER image;"
-            );
-            if ($result === false) {
-                throw new Exception($instance->getMsgError());
-            }
-        }
-    }
-
-    protected static function userFailureMessageBase()
-    {
-        $instance = Db::getInstance();
-        $exists = $instance->executeS(
-            "SHOW COLUMNS FROM `" . _DB_PREFIX_ . "wle_transaction_info` LIKE 'user_failure_message'"
-        );
-        if (empty($exists)) {
-            $result = $instance->execute(
-                "ALTER TABLE `" . _DB_PREFIX_ .
-                "wle_transaction_info` ADD COLUMN `user_failure_message` VARCHAR(2047)  COLLATE utf8_unicode_ci NULL DEFAULT NULL AFTER image;"
-            );
-            if ($result === false) {
-                throw new Exception($instance->getMsgError());
-            }
         }
     }
 }
