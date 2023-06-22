@@ -133,14 +133,6 @@ class WalleeBasemodule
 
     public static function checkRequirements(Wallee $module)
     {
-        if (!Module::isInstalled('mailhook')) {
-            $module->addError(
-                Tools::displayError(
-                    'The module mailhook is required.'
-                )
-            );
-            return false;
-        }
         try {
             \Wallee\Sdk\Http\HttpClientFactory::getClient();
         } catch (Exception $e) {
@@ -253,27 +245,6 @@ class WalleeBasemodule
     public static function displayHelpButtons(Wallee $module)
     {
         return $module->display(dirname(dirname(__FILE__)), 'views/templates/admin/admin_help_buttons.tpl');
-    }
-
-    public static function getMailHookActiveWarning(Wallee $module)
-    {
-        $output = "";
-        if (! Module::isInstalled('mailhook') || ! Module::isEnabled('mailhook')) {
-            $error = "<b>" . $module->l('The module "Mail Hook" is not active.', 'basemodule') . "</b>";
-            $error .= "<br/>";
-            $error .= $module->l(
-                'This module is recommend for handling the shop emails. Otherwise the mail sending behavior may be inappropriate.',
-                'basemodule'
-            );
-            $error .= "<br/>";
-            $error .= sprintf(
-                $module->l('You can download the module %shere%s.', 'basemodule'),
-                '<a href="https://github.com/wallee-payment/prestashop-mailhook/releases" target="_blank">',
-                '</a>'
-            );
-            $output .= $module->displayError($error);
-        }
-        return $output;
     }
 
     public static function handleSaveAll(Wallee $module)
