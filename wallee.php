@@ -32,7 +32,7 @@ class Wallee extends PaymentModule
         $this->author = 'wallee AG';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.0.1';
+        $this->version = '1.0.2';
         $this->displayName = 'wallee';
         $this->description = $this->l('This PrestaShop module enables to process payments with %s.');
         $this->description = sprintf($this->description, 'wallee');
