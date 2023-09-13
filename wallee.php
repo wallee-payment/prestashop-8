@@ -32,7 +32,7 @@ class Wallee extends PaymentModule
         $this->author = 'wallee AG';
         $this->bootstrap = true;
         $this->need_instance = 0;
-        $this->version = '1.0.3';
+        $this->version = '1.0.4';
         $this->displayName = 'wallee';
         $this->description = $this->l('This PrestaShop module enables to process payments with %s.');
         $this->description = sprintf($this->description, 'wallee');
@@ -144,6 +144,7 @@ class Wallee extends PaymentModule
         $output = WalleeBasemodule::handleSaveAll($this);
         $output .= WalleeBasemodule::handleSaveApplication($this);
         $output .= WalleeBasemodule::handleSaveEmail($this);
+        $output .= WalleeBasemodule::handleSaveIntegration($this);
         $output .= WalleeBasemodule::handleSaveCartRecreation($this);
         $output .= WalleeBasemodule::handleSaveFeeItem($this);
         $output .= WalleeBasemodule::handleSaveDownload($this);
@@ -158,6 +159,7 @@ class Wallee extends PaymentModule
     {
         return array(
             WalleeBasemodule::getEmailForm($this),
+            WalleeBasemodule::getIntegrationForm($this),
             WalleeBasemodule::getCartRecreationForm($this),
             WalleeBasemodule::getFeeForm($this),
             WalleeBasemodule::getDocumentForm($this),
@@ -172,6 +174,7 @@ class Wallee extends PaymentModule
         return array_merge(
             WalleeBasemodule::getApplicationConfigValues($this),
             WalleeBasemodule::getEmailConfigValues($this),
+            WalleeBasemodule::getIntegrationConfigValues($this),
             WalleeBasemodule::getCartRecreationConfigValues($this),
             WalleeBasemodule::getFeeItemConfigValues($this),
             WalleeBasemodule::getDownloadConfigValues($this),
@@ -251,6 +254,7 @@ class Wallee extends PaymentModule
         foreach (WalleeHelper::sortMethodConfiguration($methods) as $methodConfiguration) {
             $parameters = WalleeBasemodule::getParametersFromMethodConfiguration($this, $methodConfiguration, $cart, $shopId, $language);
             $parameters['priceDisplayTax'] = Group::getPriceDisplayMethod(Group::getCurrent()->id);
+            $parameters['iframe'] = $cart->iframe;
             $parameters['orderUrl'] = $this->context->link->getModuleLink(
                 'wallee',
                 'order',

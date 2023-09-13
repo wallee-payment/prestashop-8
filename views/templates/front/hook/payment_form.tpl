@@ -9,7 +9,7 @@
  *}
 <form action="{$orderUrl|escape:'html':'UTF-8'}" class="wallee-payment-form" data-method-id="{$methodId|escape:'html':'UTF-8'}">
 	<div id="wallee-{$methodId|escape:'html':'UTF-8'}">
-		<input type="hidden" id="wallee-iframe-possible-{$methodId|escape:'html':'UTF-8'}" name="wallee-iframe-possible-{$methodId|escape:'html':'UTF-8'}" value="false" />
+		<input type="hidden" id="wallee-iframe-possible-{$methodId|escape:'html':'UTF-8'}" name="wallee-iframe-possible-{$methodId|escape:'html':'UTF-8'}" value="{$iframe|escape:'html':'UTF-8'}" />
 		<div id="wallee-loader-{$methodId|escape:'html':'UTF-8'}" class="wallee-loader"></div>
 	</div>
 </form>
