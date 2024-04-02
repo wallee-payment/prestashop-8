@@ -5,7 +5,7 @@
  * This Prestashop module enables to process payments with wallee (https://www.wallee.com).
  *
  * @author customweb GmbH (http://www.customweb.com/)
- * @copyright 2017 - 2023 customweb GmbH
+ * @copyright 2017 - 2024 customweb GmbH
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache Software License (ASL 2.0)
  */
 
@@ -97,15 +97,18 @@ class WalleeReturnModuleFrontController extends ModuleFrontController
         if (! empty($userFailureMessage)) {
             $this->context->cookie->wle_error = $userFailureMessage;
         }
-	
+
         $order->setCurrentState(Configuration::get(WalleeBasemodule::CK_STATUS_FAILED));
-        
-	// Set cart to cookie
+        //the new state should be saved here to override the stock issues of incrementing or decrementing items when going through the webhooks
+        //by calling the setCurrentState function more than once without saving.
+        $order->save();
+
+        // Set cart to cookie
         $originalCartId = WalleeHelper::getOrderMeta($order, 'originalCart');
         if (! empty($originalCartId)) {
             $this->context->cookie->id_cart = $originalCartId;
         }
-	
+
         $this->redirect_after = $this->context->link->getPageLink('order', true, null, "step=3");
     }
 
