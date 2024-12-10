@@ -81,7 +81,11 @@ class WalleeHelper
         if ($dbLink instanceof mysqli) {
             $dbLink->commit();
         } elseif ($dbLink instanceof PDO) {
-            $dbLink->commit();
+            try {
+	            $dbLink->commit();
+	        } catch (Exception $e) {
+		        // catch exception
+	        }
         }
     }
 
